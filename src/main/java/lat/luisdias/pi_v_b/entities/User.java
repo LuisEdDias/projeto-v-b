@@ -1,14 +1,8 @@
 package lat.luisdias.pi_v_b.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lat.luisdias.pi_v_b.dtos.CreateUserDTO;
-import lat.luisdias.pi_v_b.dtos.UpdateUserDTO;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Base64;
 
 // Classe da entidade que representa um usuário do sistema
 @Entity(name = "user")
@@ -18,6 +12,7 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
     private LocalDate birthDate;
@@ -26,27 +21,28 @@ public class User {
     // Construtor padrão exigido pela JPA
     protected User() {}
 
-    // Contrutor da classe que recebe um DTO sanitizado
-    public User(CreateUserDTO userDTO) {
-        this.firstName = userDTO.firstName();
-        this.lastName = userDTO.lastName();
-        this.email = userDTO.email();
-        this.password = passwordEncode(userDTO.password());
-        this.birthDate = userDTO.birthDate();
-        this.role = userDTO.role();
+    // Contrutor da classe que recebe os dados
+    public User(
+            String firstName,
+            String lastName,
+            String email,
+            String password,
+            LocalDate birthDate,
+            UserRole role
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.role = role;
     }
 
     // Método da entidade para atualização de dados
-    public void update(UpdateUserDTO userDTO) {
-        this.email = userDTO.email();
-        this.password = passwordEncode(userDTO.password());
-        this.role = userDTO.role();
-    }
-
-    // Exemplo de método auxiliar para codificação da senha antes
-    // de persistir no banco
-    private String passwordEncode(String password) {
-        return Base64.getEncoder().encodeToString(password.getBytes());
+    public void update(String email, UserRole role, String password) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     // Getters

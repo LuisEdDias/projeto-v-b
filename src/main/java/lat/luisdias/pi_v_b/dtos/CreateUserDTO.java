@@ -11,12 +11,16 @@ public class CreateUserDTO {
 
         @NotBlank(message = "Campo obrigatório")
         @Pattern(
-                regexp = "^[a-zA-Z]+(\\s?[a-zA-Z]+)*$",
+                regexp = "^[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+(\\s?[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+)*$",
                 message = "Use apenas letras e espaços simples"
         )
         private String firstName;
 
         @NotBlank(message = "Campo obrigatório")
+        @Pattern(
+                regexp = "^[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+(\\s?[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+)*$",
+                message = "Use apenas letras e espaços simples"
+        )
         private String lastName;
 
         @NotBlank(message = "Campo obrigatório")

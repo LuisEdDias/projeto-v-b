@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 // Classe da entidade que representa um usuário do sistema
-@Entity(name = "user")
+@Entity(name = "app_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,9 +40,17 @@ public class User {
 
     // Método da entidade para atualização de dados
     public void update(String email, UserRole role, String password) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
+        if (email != null) {
+            this.email = email;
+        }
+
+        if (role != null) {
+            this.role = role;
+        }
+
+        if (password != null) {
+            this.password = password;
+        }
     }
 
     // Getters

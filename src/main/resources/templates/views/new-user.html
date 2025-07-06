@@ -1,0 +1,114 @@
+<div layout:decorate="~{template.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="align-items-lg-center justify-content-lg-center m-0 p-0 w-100">
+            <div class="container">
+                <div class="row d-flex justify-content-lg-center align-items-lg-center h-100">
+                    <div class="col col-xxl-10 p-0">
+                        <form th:action="@{/user}" th:object="${createUserDTO}" method="post"
+                              class="row d-flex g-3 align-items-center justify-content-around">
+
+                            <h1 class="col-12 py-4 text-center">Cadastro de Usuários</h1>
+
+                            <!-- Mensagem de erro global -->
+                            <div th:if="${error}" class="alert alert-danger col-12" th:text="${error}"></div>
+
+                            <!-- Primeiro Nome -->
+                            <div class="col-6 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{firstName}" type="text" id="firstName"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="firstName">Nome</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('firstName')}"
+                                     th:errors="*{firstName}"></div>
+                            </div>
+
+                            <!-- Sobrenome -->
+                            <div class="col-6 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{lastName}" type="text" id="lastName"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="lastName">Sobrenome</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('lastName')}"
+                                     th:errors="*{lastName}"></div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-12 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{email}" type="email" id="email"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="email">Email</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}"></div>
+                            </div>
+
+                            <!-- Data de nascimento -->
+                            <div class="col-6 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{birthDate}" type="date" id="birthDate"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="birthDate">Data de Nascimento</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('birthDate')}"
+                                     th:errors="*{birthDate}"></div>
+                                <div class="text-danger small" th:each="err : ${#fields.errors()}"
+                                     th:if="${err == 'O usuário deve ser maior de idade'}"
+                                     th:text="${err}">
+                                </div>
+                            </div>
+
+                            <!-- Perfil de acesso -->
+                            <div class="col-6 align-self-start">
+                                <label class="visually-hidden" for="selectRole">Perfil</label>
+                                <select th:field="*{role}" class="form-select" id="selectRole">
+                                    <option th:value="''">Selecione um perfil</option>
+                                    <option th:each="role : ${roles}"
+                                            th:value="${role}"
+                                            th:text="${role.label}">
+                                    </option>
+                                </select>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('role')}"
+                                     th:errors="*{role}"></div>
+                            </div>
+
+                            <!-- Senha -->
+                            <div class="col-6 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{password}" type="password" id="password"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="password">Senha</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('password')}"
+                                     th:errors="*{password}"></div>
+                            </div>
+
+                            <!-- Confirmação de senha -->
+                            <div class="col-6 align-self-start">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input th:field="*{confirmPassword}" type="password" id="confirmPassword"
+                                           class="form-control text-black-75 fs-4"/>
+                                    <label class="form-label" for="confirmPassword">Confirme a senha</label>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}"
+                                     th:errors="*{confirmPassword}"></div>
+                                <div class="text-danger small" th:each="err : ${#fields.errors()}"
+                                     th:if="${err == 'As senhas não coincidem'}"
+                                     th:text="${err}">
+                                </div>
+                            </div>
+
+                            <!-- Botões -->
+                            <button type="button" class="btn btn-primary col-5">
+                                <a href="/user" class="nav-link active">Lista de Usuários</a>
+                            </button>
+                            <button type="submit" class="btn btn-success col-5">Cadastrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

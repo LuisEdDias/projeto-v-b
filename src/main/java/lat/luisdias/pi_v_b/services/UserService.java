@@ -2,9 +2,7 @@ package lat.luisdias.pi_v_b.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
-import lat.luisdias.pi_v_b.dtos.CreateUserDTO;
-import lat.luisdias.pi_v_b.dtos.GetUserDTO;
-import lat.luisdias.pi_v_b.dtos.UpdateUserDTO;
+import lat.luisdias.pi_v_b.dtos.*;
 import lat.luisdias.pi_v_b.entities.User;
 import lat.luisdias.pi_v_b.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -36,47 +34,61 @@ public class UserService {
     @Transactional
     public void create(CreateUserDTO userDTO) {
         // Verifica se já existe um cadastro com o email fornecido
-        if (validateEmail(userDTO.email()).isPresent()) {
+        if (validateEmail(userDTO.getEmail()).isPresent()) {
             throw new ValidationException("Já existe um usuário cadastrado com este email");
         }
 
         // Encriptação da senha
-        String encodedPassword = passwordEncrypt(userDTO.password());
+        String encodedPassword = passwordEncrypt(userDTO.getPassword());
 
         // Criação do objeto usuário
         User user = new User(
-                userDTO.firstName(),
-                userDTO.lastName(),
-                userDTO.email(),
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getEmail(),
                 encodedPassword,
-                userDTO.birthDate(),
-                userDTO.role()
+                userDTO.getBirthDate(),
+                userDTO.getRole()
         );
 
         // Chamada do repositório para salvar o usuário no banco de dados
         userRepository.save(user);
     }
 
-    // Valida os dados de entrada e atualiza as informações do usuário
+    // Valida os dados de entrada e atualiza o email do usuário
     @Transactional
-    public void update(Long id, UpdateUserDTO userDTO) {
-        // Recupera o usuário no banco de dados e lança exceção caso não encontre
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
+    public void updateEmail(Long id, UpdateUserEmailDTO userDTO) {
+        User user = this.getById(id);
 
         // Verifica se existe outro usuário com o email fornecido
-        Optional<User> userAux = this.validateEmail(userDTO.email());
+        Optional<User> userAux = this.validateEmail(userDTO.getEmail());
         if (userAux.isPresent() && !Objects.equals(userAux.get().getId(), id)) {
             throw new ValidationException("Já existe um usuário cadastrado com este email");
         }
 
-        // Encriptação da senha
-        String encodedPassword = passwordEncrypt(userDTO.password());
+        // Atualiza os dados
+        user.update(userDTO.getEmail(), null, null);
+    }
 
-        // Atualiza os dados no objeto usuário
-        user.get().update(userDTO.email(), userDTO.role(), encodedPassword);
+    // Valida os dados de entrada e atualiza o perfil do usuário
+    @Transactional
+    public void updateRole(Long id, UpdateUserRoleDTO userDTO) {
+        User user = this.getById(id);
+
+        // Atualiza os dados
+        user.update(null, userDTO.getRole(), null);
+    }
+
+    // Valida os dados de entrada e atualiza a senha do usuário
+    @Transactional
+    public void updatePassword(Long id, UpdateUserPasswordDTO userDTO) {
+        User user = this.getById(id);
+
+        // Encriptação da senha
+        String encodedPassword = this.passwordEncrypt(userDTO.getPassword());
+
+        // Atualiza os dados
+        user.update(null, null, encodedPassword);
     }
 
     // Deleta um usuário do banco de dados, caso encontrado
@@ -90,6 +102,15 @@ public class UserService {
 
         // Apaga o registro do banco de dados
         userRepository.delete(user.get());
+    }
+
+    // Recupera o usuário no banco de dados e lança exceção caso não encontre
+    private User getById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        return user.orElseThrow(
+                () -> new EntityNotFoundException("Usuário não encontrado")
+        );
     }
 
     // Método auxiliar para validação do email

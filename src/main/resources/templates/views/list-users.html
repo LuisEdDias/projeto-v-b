@@ -1,0 +1,238 @@
+<div layout:decorate="~{template.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="align-items-lg-center justify-content-lg-center m-0 p-0 w-100">
+            <div class="container p-lg-5 h-100">
+                <div class="row d-flex justify-content-lg-center align-items-lg-center h-100">
+                    <div class="col col-xxl-10 p-0">
+
+                        <!-- Mensagem global de erro -->
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Mensagem global de sucesso -->
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <span th:text="${success}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <div class="list-group align-middle mb-0 bg-white table-responsive-lg"
+                             th:hidden="${users == null || users.isEmpty()}">
+                            <table class="table table-hover table-sm text-center">
+                                <thead class="sticky-top">
+                                <tr class="table-secondary" id="table-input">
+                                    <th scope="col" class="col-2">
+                                        Nome
+                                    </th>
+                                    <th scope="col" class="col-auto">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="col-2 align-items-center">
+                                        Data de Nasc.
+                                    </th>
+                                    <th scope="col" class="col-2">
+                                        Perfil de Acesso
+                                    </th>
+                                    <th scope="col">
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody th:each="user : ${users}">
+                                <tr class="table-item-row">
+                                    <td class="item-id text-start fw-medium" th:text="${user.fullName()}"></td>
+                                    <td class="item text-center fw-medium">
+                                        <span th:text="${user.email()}"></span>
+                                        <a type="button" th:attr="data-user-id=${user.id}"
+                                           data-bs-toggle="modal" data-bs-target="#updateEmailModal">
+                                            <i class="bi bi-pencil-square ms-2 text-primary"></i>
+                                        </a>
+                                    </td>
+                                    <td class="updated" th:text="${user.birthDate()}"></td>
+                                    <td class="status">
+                                        <span th:text="${user.role}"></span>
+                                        <a type="button" th:attr="data-user-id=${user.id}"
+                                           data-bs-toggle="modal" data-bs-target="#updateRoleModal">
+                                            <i class="bi bi-pencil-square ms-2 text-primary"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-sm btn-outline-primary" th:attr="data-user-id=${user.id}"
+                                           data-bs-toggle="modal" data-bs-target="#updatePasswordModal">
+                                            Alterar Senha
+                                        </a>
+                                        <a type="button" class="btn btn-sm btn-outline-danger" th:attr="data-user-id=${user.id}"
+                                           data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                                            Remover
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h1 class="row py-4 justify-content-center" th:hidden="${!users.isEmpty()}">
+                            Não existem usuários cadastrados!
+                        </h1>
+
+                        <div class="row justify-content-around">
+                            <button type="button" class="btn btn-success btn-lg col-4">
+                                <a href="/user/new" class="nav-link active">Cadastrar Usuário</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateEmailModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="updateEmailForm" method="post">
+                <input type="hidden" name="_method" value="put"/>
+                <div class="modal-header">
+                    <h5 class="modal-title">Atualizar Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12 align-self-start">
+                        <div data-mdb-input-init class="form-outline">
+                            <input type="email" id="email" name="email"
+                                   class="form-control text-black-75 fs-4"/>
+                            <label class="form-label" for="email">Novo Email</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateRoleModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="updateRoleForm" method="post">
+                <input type="hidden" name="_method" value="put"/>
+                <div class="modal-header">
+                    <h5 class="modal-title">Atualizar Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <label class="form-label" for="selectRole">Perfil de Acesso</label>
+                        <select name="role" class="form-select" id="selectRole">
+                            <option th:value="''">Selecione um perfil</option>
+                            <option th:each="role : ${roles}"
+                                    th:value="${role}"
+                                    th:text="${role.label}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="updatePasswordForm" method="post">
+                <input type="hidden" name="_method" value="put"/>
+                <div class="modal-header">
+                    <h5 class="modal-title">Atualizar Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-6">
+                        <div data-mdb-input-init class="form-outline">
+                            <input name="password" type="password" id="password"
+                                   class="form-control text-black-75 fs-4"/>
+                            <label class="form-label" for="password">Nova Senha</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div data-mdb-input-init class="form-outline">
+                            <input name="confirmPassword" type="password" id="confirmPassword"
+                                   class="form-control text-black-75 fs-4"/>
+                            <label class="form-label" for="confirmPassword">Confirme a senha</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteUserForm" method="post">
+                <input type="hidden" name="_method" value="delete"/>
+                <div class="modal-header">
+                    <h5 class="modal-title">Deletar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-4 fw-bold text-danger text-center">Tem certeza que deseja remover esse usuário?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const updateEmailModal = document.getElementById('updateEmailModal');
+    updateEmailModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+
+        const form = document.getElementById('updateEmailForm');
+        form.action = `/user/${userId}/update-email`;
+    });
+
+    const updateRoleModal = document.getElementById('updateRoleModal');
+    updateRoleModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+
+        const form = document.getElementById('updateRoleForm');
+        form.action = `/user/${userId}/update-role`;
+    });
+
+    const updatePasswordModal = document.getElementById('updatePasswordModal');
+    updatePasswordModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+
+        const form = document.getElementById('updatePasswordForm');
+        form.action = `/user/${userId}/update-password`;
+    });
+
+    const deleteUserModal = document.getElementById('deleteUserModal');
+    deleteUserModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+
+        const form = document.getElementById('deleteUserForm');
+        form.action = `/user/${userId}`;
+    });
+</script>

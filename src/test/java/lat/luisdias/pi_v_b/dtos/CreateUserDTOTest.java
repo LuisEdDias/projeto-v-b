@@ -26,7 +26,6 @@ public class CreateUserDTOTest {
     void deveSerValidoQuandoTodosOsCamposForemCorretos() {
         CreateUserDTO dto = getValidDTO();
         Set<ConstraintViolation<CreateUserDTO>> violations = validator.validate(dto);
-        violations.forEach(System.out::println);
         assertTrue(violations.isEmpty(), "Esperado nenhum erro de validação");
     }
 

@@ -18,8 +18,8 @@ disciplinas de Engenharia de Software e Gestão da Qualidade na UCPel.
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/seu-projeto.git
-   cd seu-projeto
+   git clone https://github.com/LuisEdDias/projeto-v-b.git
+   cd projeto-v-b
    ```
 2. Construa a imagem Docker:
    ```bash
